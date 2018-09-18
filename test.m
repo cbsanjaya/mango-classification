@@ -8,8 +8,10 @@ type = 'classification';
 % load data_training
 load('data_training.mat');
 
-L_fold = 10;
-[gam,sig2] = tunelssvm({ciri_database, ciri_mapping, type, [], [], 'RBF_kernel'}, 'simplex', 'crossvalidatelssvm', {L_fold, 'misclass'});
+% L_fold = 10;
+% [gam,sig2] = tunelssvm({ciri_database, ciri_mapping, type, [], [], 'RBF_kernel'}, 'simplex', 'crossvalidatelssvm', {L_fold, 'misclass'});
+gam = 355.9552;
+sig2 = 12.06779;
 
 [alpha,b] = trainlssvm({ciri_database, ciri_mapping, type, gam, sig2, 'RBF_kernel'});
 
