@@ -1,5 +1,5 @@
 % add lssvm to path
-lssvmPath = strcat(pwd, '..\lssvm');
+lssvmPath = strcat(pwd, '\lssvm');
 addpath(lssvmPath);
 
 % type of lssvm is classification
