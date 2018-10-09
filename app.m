@@ -83,7 +83,7 @@ function PbLoad_Callback(hObject, eventdata, handles)
 
 if ~isequal(filename,0)
     Img = imread(fullfile(pathname,filename));
-    axes(handles.AxMango);
+    axes(handles.ImBase);
     imshow(Img);
     title(strcat('Mango Image: ', filename));
     set(handles.PbCheck, 'Enable', 'on');
@@ -101,8 +101,11 @@ function PbCheck_Callback(hObject, eventdata, handles)
 % hObject    handle to PbCheck (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+tic
+
 Img = handles.Img;
-ciri_image = GetCiri(Img);
+ciri_image = GetCiri(handles, Img);
 
 % add lssvm to path
 lssvmPath = strcat(pwd, '\lssvm');
@@ -133,8 +136,10 @@ else
 end
 
 set(handles.TxResult, 'String', result);
+toc
 
-function ciri = GetCiri(Img)
+
+function ciri = GetCiri(handles, Img)
 % Color-Based Segmentation Using K-Means Clustering
 cform = makecform('srgb2lab');
 lab = applycform(Img,cform);
@@ -167,6 +172,10 @@ area_cluster2 = sum(find(pixel_labels==2));
 Img_bw = (pixel_labels==cluster_min);
 Img_bw = imfill(Img_bw,'holes');
 Img_bw = bwareaopen(Img_bw,50);
+
+axes(handles.ImSegmentation)
+imshow(Img_bw)
+title('Citra Hasil Segmentasi');
 
 stats = regionprops(Img_bw,'Area','Perimeter','Eccentricity');
 area = stats.Area;
