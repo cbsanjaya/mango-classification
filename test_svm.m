@@ -1,13 +1,16 @@
 % load data_training
-load('data_training.mat');
+load('db_training.mat');
 
 % training
-SVMModel = svmtrain(ciri_database, ciri_mapping);
+SVMModel = svmtrain(X, Y);
 
-% test
-ciri_hasil = svmclassify(SVMModel, ciri_database);
+% load data_testing
+load('db_testing.mat');
 
-cMat = confusionmat(ciri_mapping, ciri_hasil);
+% test Xt to YResult
+YResult = svmclassify(SVMModel, Xt);
+
+cMat = confusionmat(Yt, YResult);
 tp = cMat(1,1);
 fp = cMat(2,1);
 fn = cMat(1,2);

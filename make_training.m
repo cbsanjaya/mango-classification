@@ -1,10 +1,10 @@
 clc; clear; close all; warning off all;
 
-image_folder = strcat(pwd, '\mango');
+image_folder = strcat(pwd, '\img_training');
 filenames = dir(fullfile(image_folder, '*.jpg'));
 total_images = numel(filenames);
-ciri_database = zeros(total_images, 6);
-ciri_mapping = zeros(total_images, 1);
+X = zeros(total_images, 6);
+Y = zeros(total_images, 1);
 
 for n = 1:total_images
     full_name= fullfile(image_folder, filenames(n).name);
@@ -13,9 +13,9 @@ for n = 1:total_images
     isMature = name(4:6);
     
     if strcmp(isMature, 'mtr')
-        ciri_mapping(n,:) = 1;
+        Y(n,:) = 1;
     else
-        ciri_mapping(n,:) = -1;
+        Y(n,:) = 0;
     end
     
     Img = imread(full_name);
@@ -70,8 +70,8 @@ for n = 1:total_images
     Energy = mean(stats.Energy);
     Homogeneity = mean(stats.Homogeneity);
     
-    ciri_database(n,:) = [metric,eccentricity,Contrast,Correlation,Energy,Homogeneity];
+    X(n,:) = [metric,eccentricity,Contrast,Correlation,Energy,Homogeneity];
 end
 
-save('data_training', 'ciri_database');
-save('data_training', 'ciri_mapping', '-append');
+save('db_training', 'X');
+save('db_training', 'Y', '-append');
