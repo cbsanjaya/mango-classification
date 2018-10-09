@@ -1,6 +1,6 @@
 clc; clear; close all; warning off all;
 
-image_folder = strcat(pwd, '\img_testing');
+image_folder = strcat(pwd, '\mango_img\img_testing');
 filenames = dir(fullfile(image_folder, '*.jpg'));
 total_images = numel(filenames);
 Xt = zeros(total_images, 6);
