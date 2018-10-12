@@ -88,6 +88,17 @@ if ~isequal(filename,0)
     title(strcat('Mango Image: ', filename));
     set(handles.PbCheck, 'Enable', 'on');
     set(handles.TxResult, 'String', 'Undefined');
+    set(handles.TblFeature,'Data',[])
+    
+    axes(handles.ImSegmentation)
+    cla reset
+    set(gca,'XTick',[])
+    set(gca,'YTick',[])
+
+    axes(handles.ImFeature)
+    cla reset
+    set(gca,'XTick',[])
+    set(gca,'YTick',[])
 else
     return
 end
@@ -115,15 +126,15 @@ addpath(lssvmPath);
 type = 'classification';
 
 % load data_training
-load('data_training.mat');
+load('db_training.mat');
 
 % L_fold = 10;
 % [gam,sig2] = tunelssvm({ciri_database, ciri_mapping, type, [], [], 'RBF_kernel'}, 'simplex', 'crossvalidatelssvm', {L_fold, 'misclass'});
-gam = 355.9552;
-sig2 = 12.06779;
+gam = 12.6361;
+sig2 = 1.3253;
 
 % [alpha,b] = trainlssvm({ciri_database, ciri_mapping, type, gam, sig2, 'RBF_kernel'});
-model = trainlssvm({ciri_database, ciri_mapping, type, gam, sig2, 'RBF_kernel'});
+model = trainlssvm({X, Y, type, gam, sig2, 'RBF_kernel'});
 
 % test image
 % image_result = simlssvm({ciri_database, ciri_mapping, type, gam, sig2, 'RBF_kernel'}, {alpha, b}, ciri_image);
@@ -186,6 +197,10 @@ eccentricity = stats.Eccentricity;
 Img_gray = rgb2gray(Img);
 Img_gray(~Img_bw) = 0;
 
+axes(handles.ImFeature)
+imshow(Img_gray)
+title('Citra Grayscale');
+
 pixel_dist = 1;
 GLCM = graycomatrix(Img_gray,'Offset',[0 pixel_dist; -pixel_dist pixel_dist; -pixel_dist 0; -pixel_dist -pixel_dist]);
 stats = graycoprops(GLCM,{'contrast','correlation','energy','homogeneity'});
@@ -195,3 +210,24 @@ Energy = mean(stats.Energy);
 Homogeneity = mean(stats.Homogeneity);
 
 ciri = [metric,eccentricity,Contrast,Correlation,Energy,Homogeneity];
+
+feature = cell(6,2);
+feature{1,1} = 'Metric';
+feature{2,1} = 'Eccentricity';
+feature{3,1} = 'Contrast';
+feature{4,1} = 'Correlation';
+feature{5,1} = 'Energy';
+feature{6,1} = 'Homogeneity';
+feature{1,2} = num2str(metric);
+feature{2,2} = num2str(eccentricity);
+feature{3,2} = num2str(Contrast);
+feature{4,2} = num2str(Correlation);
+feature{5,2} = num2str(Energy);
+feature{6,2} = num2str(Homogeneity);
+
+row_cell = cell(6,1);
+for i = 1:6
+    row_cell{i} = num2str(i);
+end
+
+set(handles.TblFeature,'Data',feature,'RowName',row_cell)
