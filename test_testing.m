@@ -1,3 +1,5 @@
+%start computation time
+tic
 % add lssvm to path
 lssvmPath = strcat(pwd, '\lssvm');
 addpath(lssvmPath);
@@ -12,7 +14,7 @@ load('db_training.mat');
 %[gam,sig2] = tunelssvm({X, Y, type, [], [], 'RBF_kernel'}, 'simplex', 'crossvalidatelssvm', {L_fold, 'misclass'});
 gam = 12.6361;
 sig2 = 1.3253;
- 
+
 [alpha,b] = trainlssvm({X, Y, type, gam, sig2, 'RBF_kernel'});
 
 % load data_testing
@@ -33,6 +35,10 @@ fp = cMat(2,1);
 fn = cMat(1,2);
 tn= cMat(2,2);
 
+% 98,3333 %
 accuration = (((tp + tn ) / (tp + tn + fp + fn )) * 100);
 presition = ((tp / (fp + tp)) * 100);
 recall = ((tp / (fn + tp)) * 100);
+
+% end computation time
+toc
